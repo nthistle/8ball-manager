@@ -285,14 +285,21 @@ class EightBallBot(fbchat.Client):
 
 fbchat.log.setLevel(100)
 
+
+authfile = open("auth.auth")
+authraw = authfile.read()
+authfile.close()
+
+uid = authraw.split("\n")[0]
+pwd = authraw.split("\n")[1]
+chatid = authraw.split("\n")[2]
+
+
 #print("Automatic 8-Ball Ranking System Update Script")
 #print("Please Login:")
 while True:
     try:
         #INSERT YOUR OWN SHIT
-        uid = "kakbkys@gmail.com" #input("Email: ")
-        pwd = "memset123" #getpass.getpass()
-        chatid = "1322793181109776" #input("Chat ID: ")
         print("Launching thread...")
         t1 = Thread(target = loopContinuously)
         t1.setDaemon(True)
