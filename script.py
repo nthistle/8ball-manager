@@ -294,6 +294,7 @@ uid = authraw.split("\n")[0]
 pwd = authraw.split("\n")[1]
 chatid = authraw.split("\n")[2]
 
+setupUsers()
 
 #print("Automatic 8-Ball Ranking System Update Script")
 #print("Please Login:")
