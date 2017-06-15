@@ -1,0 +1,6 @@
+## Generated Files
+*.dat
+*.log
+
+## Credentials
+*.auth
