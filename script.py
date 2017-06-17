@@ -7,6 +7,7 @@ from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
 import time
 import os
+import requests
 
 try:
     input = raw_input
@@ -266,11 +267,29 @@ class EightBallBot(fbchat.Client):
         self.cid = chatid
         self.send(self.cid, "8-Ball Ranking System now online...", is_user=False)    
 
+    def do_one_listen(self, markAlive=True):
+        """Does one cycle of the listening loop.
+        This method is only useful if you want to control fbchat from an
+        external event loop."""
+        try:
+            #if markAlive: self.ping(self.sticky)
+            try:
+                content = self._pullMessage(self.sticky, self.pool)
+                if content: self._parseMessage(content)
+            except requests.exceptions.RequestException as e:
+                pass
+        except KeyboardInterrupt:
+            self.listening = False
+        except requests.exceptions.Timeout:
+            pass
+
     def on_message(self, mid, author_id, author_name, message, metadata):
         self.markAsDelivered(author_id, mid)
         self.markAsRead(author_id)
         if(message.strip() == "/ranking"):
-            assert self.send(self.cid, getRankings(), is_user=False)          
+            assert self.send(self.cid, getRankings(), is_user=False)
+        if(message.strip() == "ping"):
+            assert self.send(self.cid, "pong", is_user=False)           
         try:
             gameMessage = metadata['delta']['messageMetadata']['adminText'].lower().strip().replace("!"," ")
             print("Game Message: " + gameMessage)
