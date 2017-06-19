@@ -19,7 +19,6 @@ k = 150
 hours = 24*3
 ################################################################################################################################
 
-keywords = [" only has the 8 Ball remaining"," missed"," potted"," has","play 8 Ball Pool"," failed"," beat"," lost", " committed"]
 users = []
 stockpile = 0
 bot = None
@@ -304,6 +303,13 @@ class EightBallBot(fbchat.Client):
                     winner = gameMessage.split(" ")[3]
                     loser = gameMessage.split(" ")[0]
                 retMessage = "Error occurred, check logs"
+                for x in range(len(users)):
+                    if(winner == users[x][0] or loser == users[x][0]):
+                        users[x][1] = 0
+                f = open("users.dat", 'w')
+                for each in users:
+                    f.write(str(each[0]) + "," + str(each[1]) + "\n")
+                f.close()
                 try:
                     retMessage = updateElo(winner, loser)
                     print("Elo update successful!")
@@ -313,21 +319,7 @@ class EightBallBot(fbchat.Client):
                 assert self.send(self.cid, retMessage, is_user=False)
                 sys.stdout.flush()
             elif "check this out" in gameMessage:
-                self.send(self.cid, "Received 'Check this out', please manually input game data", is_user=False)
-            
-            #############################################################################################################
-
-            if (" only has the 8 ball remaining" in gameMessage or " missed" in gameMessage or " potted" in gameMessage or " has" in gameMessage or "play 8 ball pool" in gameMessage or " failed" in gameMessage or ((" beat" in gameMessage or " lost" in gameMessage) and ("name" not in gameMessage))):
-                target = gameMessage.split(getContent(gameMessage))[0]
-                for x in range(len(users)):
-                    if(target == users[x][0]):
-                        users[x][1] = 0
-                f = open("users.dat", 'w')
-                for each in users:
-                    f.write(str(each[0]) + "," + str(each[1]) + "\n")
-                f.close()
-            #############################################################################################################
-            
+                self.send(self.cid, "Received 'Check this out', please manually input game data", is_user=False)            
         except:
             pass
 
