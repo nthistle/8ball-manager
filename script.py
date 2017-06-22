@@ -16,7 +16,7 @@ except:
 
 #game constants
 k = 150
-hours = 24*3
+hours = 24*2
 ################################################################################################################################
 
 users = []
@@ -65,6 +65,7 @@ def setupUsers():
         f.close()
 
 def incrementHours():
+    global users
     for x in range(len(users)):
         users[x][1] = users[x][1] + 1
     f = open("users.dat", 'w')
@@ -77,6 +78,7 @@ def incrementHours():
 def checkForEloAdjust():
     global stockpile
     global hours
+    global users
     adjustList = []
     for each in users:
         if each[1] > hours:
@@ -89,6 +91,7 @@ def checkForEloAdjust():
 
 
 def sortPlayersList(players):
+    global users
     players3
     players2 = [(-p[2], p[0], p[1]) for p in players]
     players2.sort()
@@ -97,6 +100,7 @@ def sortPlayersList(players):
     return players3
 
 def adjustElo(list):
+    global users
     global stockpile
     global bot
     print(list)
@@ -158,6 +162,7 @@ def checkIfMidnight():
     return seconds_since_midnight
 
 def loopContinuously():
+    global users
     global bot
     while bot == None:
         pass
@@ -283,6 +288,7 @@ class EightBallBot(fbchat.Client):
             pass
 
     def on_message(self, mid, author_id, author_name, message, metadata):
+        global users
         self.markAsDelivered(author_id, mid)
         self.markAsRead(author_id)
         if(message.strip() == "/ranking"):
@@ -304,8 +310,10 @@ class EightBallBot(fbchat.Client):
                     loser = gameMessage.split(" ")[0]
                 retMessage = "Error occurred, check logs"
                 for x in range(len(users)):
-                    if(winner == users[x][0] or loser == users[x][0]):
+                    if(users[x][0].strip().lower() in winner or users[x][0].strip().lower() in loser):
                         users[x][1] = 0
+                print("Updated users")
+                print(users)
                 f = open("users.dat", 'w')
                 for each in users:
                     f.write(str(each[0]) + "," + str(each[1]) + "\n")
